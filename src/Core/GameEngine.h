@@ -11,14 +11,17 @@
 #define _GAME_ENGINE_H_
 
 #include <Core/IGameEngine.h>
-#include <list>
-#include <typeinfo>
+#include <EventSystem/EventSystem.h>
+
+using namespace OpenEngine::EventSystem;
 
 namespace OpenEngine {
 namespace Core {
 
-using std::type_info;
-using std::list;
+struct TickArg {
+    float deltaTime;
+    TickArg() : deltaTime(0.0) {}
+};
 
 /**
  * Game Engine implementation.
@@ -34,41 +37,23 @@ private:
     // Engine running flag
     bool running;
 
-    // Tick time for dependent modules
-    float tick;
-
-    // Maximum iterations to perform for tick dependent modules.
-    static const int MAX_LOOPS = 10;
-
-    // Lists for engine modules
-    list<IModule*> dependent;
-    list<IModule*> independent;
-
     GameEngine();
     void InitModules();
     void DeinitModules();
     void StartGameLoop();
-    void RunIndependentModules(const float delta, const float percent);
-    void RunDependentModules(const float delta, const float percent);
+    void ProcessModules(const float delta);
 
 public:
 
     static IGameEngine& Instance();
     ~GameEngine();
 
-    float GetTickTime();
-    void SetTickTime(const float time);
-
-    void AddModule(IModule& module, const ProcessTick flag = TICK_INDEPENDENT);
-    void RemoveModule(IModule& module);
-
-    int GetNumberOfModules();
-
-    IModule* Lookup(const type_info& inf);
-
     void Start(IGameFactory* factory);
     void Stop();
 
+    static Event<void*> initializeEvent;
+    static Event<void*> deinitializeEvent;
+    static Event<TickArg> processEvent;
 };
 
 } // NS Core

@@ -10,13 +10,8 @@
 #ifndef _INTERFACE_GAME_ENGINE_H_
 #define _INTERFACE_GAME_ENGINE_H_
 
-#include <vector>
-#include <Core/IModule.h>
-
 namespace OpenEngine {
 namespace Core {
-
-using OpenEngine::Core::IModule;
 
 // forward declarations
 class IGameFactory;
@@ -46,18 +41,6 @@ protected:
 public:
 
     /**
-     * Process module tick setting.
-     *
-     * @enum ProcessTick ..
-     */
-    enum ProcessTick {
-        //! process independent of the tick time (on every engine loop).
-        TICK_INDEPENDENT,
-        //! process once every tick time.
-        TICK_DEPENDENT
-    };
-
-    /**
      * Get game engine instance.
      *
      * @return Reference to GameEngine instance
@@ -68,53 +51,6 @@ public:
      * Remove the engine instance on destruction.
      */
     virtual ~IGameEngine();
-
-    /**
-     * Get the current tick time.
-     *
-     * @return Current tick time.
-     */
-    virtual float GetTickTime() = 0;
-
-    /**
-     * Set the tick time.
-     * This affects the processing of all modules added with the
-     * TICK_DEPENDENT option.
-     *
-     * @param time Process tick time.
-     */
-    virtual void SetTickTime(const float time) = 0;
-
-    /**
-     * Add module
-     *
-     * @param module Module to add.
-     * @param flag Flag of the modules tick dependency.
-     */
-    virtual void AddModule(IModule& module, const ProcessTick flag = TICK_INDEPENDENT) = 0;
-
-    /**
-     * Remove module
-     *
-     * @param module to be removed
-     */
-    virtual void RemoveModule(IModule& module) = 0;
-
-    /**
-     * Lookup module of same type as search.
-     * 
-     * @param  inf Type info as returned by \a typeid(moduleclass)
-     * @return pointer to \a IModule or \a NULL if module of type
-     *         is not found. 
-     */
-    virtual IModule* Lookup(const std::type_info& inf) = 0;
-
-    /**
-     * Get number of loaded modules
-     *
-     * @return integer value
-     */
-    virtual int GetNumberOfModules() = 0;
 
     /**
      * Start the engine.
